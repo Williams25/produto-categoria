@@ -1,6 +1,6 @@
 module.exports = function (app){
     var controller = {};
-    var produto = app.models.produto;
+    var produto = app.models.Produto;
 
     controller.salvaProduto = function (req, res){
         produto.create(req.body).then(
