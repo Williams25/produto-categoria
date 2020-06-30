@@ -8,10 +8,8 @@ module.exports = function(){
         valor: {
             type: Number,
             required: false,
-            default: function(v){
-                if(this.valor < 0)
-                    return 'O valor tem que ser maior que 0'
-            }
+            min: [this.valor > 0]
+            
         },
         ativo: {
             type: Boolean,
@@ -31,4 +29,6 @@ module.exports = function(){
             required: false
         }
     })
+
+    return mongoose.model('Produto', schema);
 }

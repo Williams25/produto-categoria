@@ -1,11 +1,11 @@
 module.exports = function (app){
     var controller = {};
-    var produto = app.models.Produto;
+    var categoria = app.models.Categoria;
 
-    controller.salvaProduto = function (req, res){
-        produto.create(req.body).then(
-            function (produto){
-                res.status(201).json(produto)
+    controller.salvaCategoria = function (req, res){
+        categoria.create(req.body).then(
+            function (categoria){
+                res.status(201).json(categoria)
             }, function (erro){
                 console.error(erro);
                 res.status(500).json(erro);
@@ -13,10 +13,10 @@ module.exports = function (app){
         );
     };
 
-    controller.listaProdutos = function (req, res){
-        produto.find().exec().then(
-            function (produto){
-                res.status(200).json(produto);
+    controller.listaCategoria = function (req, res){
+        categoria.find().exec().then(
+            function (categoria){
+                res.status(200).json(categoria);
             }, function (erro){
                 console.error(erro);
                 res.status(500).json(erro);
@@ -24,11 +24,11 @@ module.exports = function (app){
         );
     };
 
-    controller.alterarProduto = function (req, res){
+    controller.alterarCategoria = function (req, res){
         var _id = req.body.id;
-        produto.findByIdAndUpdate(_id, req.body).exec().then(
-            function (produto){
-                res.status(200).json(produto);
+        categoria.findByIdAndUpdate(_id, req.body).exec().then(
+            function (categoria){
+                res.status(200).json(categoria);
             }, function (erro){
                 console.error(erro);
                 res.status(500).json(erro);
@@ -36,10 +36,11 @@ module.exports = function (app){
         );
     };
 
-    controller.removeProduto = function (req,res){
+    controller.removeCategoria = function (req,res){
         var _id = req.params.id;
-        produto.remove({"_id": _id}).exec().then(
-            function(produto){
+        categoria.remove({"_id": _id}).exec().then(
+            function(categoria){
+                console.log(categoria)
                 res.status(204).end();
             }, function(erro){
                 console.error(erro);
@@ -48,14 +49,14 @@ module.exports = function (app){
         );
     };
 
-    controller.obtemProduto = function (req, res) {
+    controller.obtemCategoria = function (req, res) {
         var _id = req.params.id;
-        produto.findById(_id).exec().then(
-            function(produto){
-                if(!produto){
+        categoria.findById(_id).exec().then(
+            function(categoria){
+                if(!categoria){
                     res.status(404).end();
                 }else{
-                    res.status(200).json(produto);
+                    res.status(200).json(categoria);
                 }
             }, function (erro){
                 console.error(erro);
