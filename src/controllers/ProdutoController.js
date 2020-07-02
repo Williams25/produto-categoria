@@ -3,7 +3,24 @@ module.exports = function (app) {
   var produto = app.models.Produto;
 
   controller.salvaProduto = function (req, res) {
-    produto.create(req.body).then(
+    const { descricao, valor, categoria} = req.body;
+
+    if (!descricao || !valor || !categoria) return res.status(400).send({
+      mensagem: 'Campos invalidos!',
+      body: {
+        required: {
+          descricao: 'String',
+          Valor: 'Number',
+          categoria: 'ObjectId',
+        }
+      }
+    })
+
+    const body = {
+      descricao, valor, categoria
+    }
+
+    produto.create(body).then(
       function (produto) {
         res.status(201).json(produto)
       }, function (erro) {
@@ -16,7 +33,18 @@ module.exports = function (app) {
   controller.listaProdutos = function (req, res) {
     produto.find().populate('categoria').exec().then(
       function (produto) {
-        res.status(200).json(produto);
+        const response = produto.map(e => {
+          return {
+            _id: e._id,
+            descricao: e.descricao,
+            valor:Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(e.valor),
+            categoria: {
+              _id: e.categoria._id,
+              descricao: e.catedoria.descricao,
+            }
+          }
+        })
+        res.status(200).json({ quantidade: produto.length, produto: response });
       }, function (erro) {
         console.error(erro);
         res.status(500).json(erro);
@@ -25,8 +53,24 @@ module.exports = function (app) {
   };
 
   controller.alterarProduto = function (req, res) {
-    var _id = req.body._id;
-    produto.findByIdAndUpdate(_id, req.body).exec().then(
+    const { descricao, valor, categoria} = req.body;
+
+    if (!descricao || !valor || !categoria) return res.status(400).send({
+      mensagem: 'Campos invalidos!',
+      body: {
+        required: {
+          descricao: 'String',
+          Valor: 'Number',
+          categoria: 'ObjectId',
+        }
+      }
+    })
+
+    const body = {
+      descricao, valor, categoria
+    }
+
+    produto.findByIdAndUpdate(_id, body).exec().then(
       function (produto) {
         res.status(200).json(produto);
       }, function (erro) {
@@ -49,13 +93,24 @@ module.exports = function (app) {
   };
 
   controller.obtemProduto = function (req, res) {
-    var _id = req.params.id;
+    const { id } = req.params;
     produto.findById(_id).populate('categoria').exec().then(
       function (produto) {
         if (!produto) {
           res.status(404).end();
         } else {
-          res.status(200).json(produto);
+          const response = {
+            _id: produto._id,
+            descricao: produto.descricao,
+            valor: produto.valor,
+            created: produto.created,
+            categoria: {
+              _id: produto.categoria._id,
+              descricao: produto.categoria.descricao,
+            }
+          }
+
+          res.status(200).json({ produto: response });
         }
       }, function (erro) {
         console.error(erro);

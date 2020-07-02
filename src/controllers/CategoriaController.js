@@ -3,7 +3,21 @@ module.exports = function (app) {
   var categoria = app.models.Categoria;
 
   controller.salvaCategoria = function (req, res) {
-    categoria.create(req.body).then(
+    const {descricao } = req.body;
+    
+    if (!descricao) return res.status(400).send({
+      mensagem: 'Campos invalidos!',
+      body: {
+        required: {
+          descricao: 'String'
+        }
+      }
+    })
+    const body = {
+      descricao
+    }
+
+    categoria.create(body).then(
       function (categoria) {
         res.status(201).json(categoria)
       }, function (erro) {
@@ -16,7 +30,13 @@ module.exports = function (app) {
   controller.listaCategoria = function (req, res) {
     categoria.find().exec().then(
       function (categoria) {
-        res.status(200).json(categoria);
+        const response = categoria.map(e => {
+          return {
+            _id: e._id,
+           descricao: e.descricao
+          }
+        })
+        res.status(200).json({ quantidade: descricao.length, descricao: response });
       }, function (erro) {
         console.error(erro);
         res.status(500).json(erro);
@@ -25,8 +45,21 @@ module.exports = function (app) {
   };
 
   controller.alterarCategoria = function (req, res) {
-    var _id = req.body.id;
-    categoria.findOneAndUpdate(_id, req.body).exec().then(
+    const {descricao, _id } = req.body;
+    
+    if (!descricao || !_id) return res.status(400).send({
+      mensagem: 'Campos invalidos!',
+      body: {
+        required: {
+          descricao: 'String',
+          _id: 'ObjectId'
+        }
+      }
+    })
+    const body = {
+      descricao, _id
+    }
+    categoria.findOneAndUpdate(_id, body).exec().then(
       function (categoria) {
         res.status(200).json(categoria);
       }, function (erro) {
@@ -56,7 +89,11 @@ module.exports = function (app) {
         if (!categoria) {
           res.status(404).end();
         } else {
-          res.status(200).json(categoria);
+          const response = {
+            _id: categoria._id,
+            descricao: categoria.descricao
+          }
+          res.status(200).json({categoria:response});
         }
       }, function (erro) {
         console.error(erro);
