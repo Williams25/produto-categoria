@@ -40,7 +40,7 @@ module.exports = function (app) {
             valor:Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(e.valor),
             categoria: {
               _id: e.categoria._id,
-              descricao: e.catedoria.descricao,
+              descricao: e.categoria.descricao,
             }
           }
         })
@@ -53,21 +53,22 @@ module.exports = function (app) {
   };
 
   controller.alterarProduto = function (req, res) {
-    const { descricao, valor, categoria} = req.body;
+    const { descricao, valor, categoria, _id} = req.body;
 
-    if (!descricao || !valor || !categoria) return res.status(400).send({
+    if (!descricao || !valor || !categoria || !_id) return res.status(400).send({
       mensagem: 'Campos invalidos!',
       body: {
         required: {
           descricao: 'String',
           Valor: 'Number',
           categoria: 'ObjectId',
+          _id: 'ObjectId',
         }
       }
     })
 
     const body = {
-      descricao, valor, categoria
+      descricao, valor, categoria, _id
     }
 
     produto.findByIdAndUpdate(_id, body).exec().then(
@@ -94,7 +95,7 @@ module.exports = function (app) {
 
   controller.obtemProduto = function (req, res) {
     const { id } = req.params;
-    produto.findById(_id).populate('categoria').exec().then(
+    produto.findById(id).populate('categoria').exec().then(
       function (produto) {
         if (!produto) {
           res.status(404).end();
@@ -102,7 +103,7 @@ module.exports = function (app) {
           const response = {
             _id: produto._id,
             descricao: produto.descricao,
-            valor: produto.valor,
+            valor:Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(produto.valor),
             created: produto.created,
             categoria: {
               _id: produto.categoria._id,

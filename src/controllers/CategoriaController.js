@@ -36,7 +36,7 @@ module.exports = function (app) {
            descricao: e.descricao
           }
         })
-        res.status(200).json({ quantidade: descricao.length, descricao: response });
+        res.status(200).json({ quantidade: categoria.length, categoria: response });
       }, function (erro) {
         console.error(erro);
         res.status(500).json(erro);
