@@ -38,6 +38,7 @@ module.exports = function (app) {
             _id: e._id,
             descricao: e.descricao,
             valor:Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(e.valor),
+            created: e.created,
             categoria: {
               _id: e.categoria._id,
               descricao: e.categoria.descricao,

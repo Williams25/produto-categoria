@@ -38,12 +38,14 @@ module.exports = function (app) {
             _id: e._id,
             quantidadedeMinimaEstoque: e.quantidadedeMinimaEstoque,
             quantidadedeEstoque: e.quantidadedeEstoque,
+            created: e.created,
             produto: {
               _id: e.produto._id,
               categoria: e.produto.categoria,
               descricao: e.produto.descricao,
               valor: Intl.NumberFormat('pt-br', { style: 'currency', currency: 'BRL' }).format(e.produto.valor),
               ativo: e.produto.ativo,
+              created: e.produto.created,
             }
           }
         })
